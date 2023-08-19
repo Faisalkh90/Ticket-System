@@ -6,8 +6,6 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      min: 3,
-      max: 255,
     },
     email: {
       type: String,
@@ -16,16 +14,12 @@ const userSchema = new mongoose.Schema(
       match: [
         // Regex to validate email
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        "Please enter a valid email",
+        "Please enter a valid email. Example: Faisal@gmail.com",
       ],
-      min: 6,
-      max: 255,
     },
     role: {
       type: String,
       required: true,
-      min: 6,
-      max: 255,
     },
   },
   { timestamps: true }
