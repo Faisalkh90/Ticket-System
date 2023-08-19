@@ -38,4 +38,13 @@ async function getUsers(req: Request, res: Response) {
   }
 }
 
-export { createUser, getUsers };
+async function getUserById(req: Request, res: Response) {
+  try {
+    const user = await User.findById(req.params.id);
+    return res.status(200).json(user);
+  } catch (err: any) {
+    return res.status(500).json({ msg: err.message });
+  }
+}
+
+export { createUser, getUsers, getUserById };

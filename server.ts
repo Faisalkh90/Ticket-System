@@ -1,7 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/DB";
-import { createUser, getUsers } from "./controllers/userController";
+import {
+  createUser,
+  getUsers,
+  getUserById,
+} from "./controllers/userController";
 const app = express();
 
 // Load environment variables
@@ -14,6 +18,7 @@ app.get("/", (req, res) => {
 
 app.post("/users", createUser);
 app.get("/users", getUsers);
+app.get("/users/:id", getUserById);
 
 // Connect to DB and listen to port
 connectDB().then(() => {
