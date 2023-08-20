@@ -6,14 +6,10 @@ const ticketSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      min: 3,
-      max: 255,
     },
     description: {
       type: String,
       required: true,
-      min: 3,
-      max: 255,
     },
     status: {
       type: String,
@@ -23,7 +19,11 @@ const ticketSchema = new mongoose.Schema(
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
+
+// Create a model from ticket schema
+export default mongoose.model("Ticket", ticketSchema);

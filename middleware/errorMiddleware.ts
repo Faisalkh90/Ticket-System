@@ -8,4 +8,16 @@ async function checkUserExists(req: Request, res: Response, email: string) {
   }
 }
 
-export { checkUserExists };
+async function checkUserFields(
+  req: Request,
+  res: Response,
+  name: string,
+  email: string,
+  role: string,
+) {
+  if (!name || !email || !role) {
+    throw new Error("Missing required fields: name, email, role");
+  }
+}
+
+export { checkUserExists, checkUserFields };
