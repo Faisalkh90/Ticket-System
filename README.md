@@ -38,19 +38,109 @@ The database schema is as follows:
 ## API Endpoints
 
 ### User Endpoints
-- **GET** `/users` - Get all users.
-    - 
-- **GET** `/users/:id` - Get a user by id.
-- **POST** `/users` - Create a new user.
+- Create a new user.
+   - **POST** `/users` - Create a new user.
+   - request body:
+   ```
+   {
+    "name": "Faisal",
+    "email": "Faisal@example.com",
+    "role": "admin"
+    }
+    ```
+  
+- Get all users.
+  - **GET** `/users` - Get all users.
+  - response body:
+  ```
+  [
+    {
+        "_id": "60f0b0b0e3b3a1b0b4f1b0b4",
+        "name": "Faisal",
+        "email": "Faisal@example.com",
+        "role": "admin",
+    },
+  ]
+  ```
+  
+- Get a user by id.
+    - **GET** `/users/:id` - Get a user by id.
+    - request parameters
+      - id: user id
+
+
+- Update a user by id.
 - **PUT** `/users/:id` - Update a user by id.
+  - request parameters
+    - id: user id
+    - request body:
+   ```
+   {
+    "name": "Faisal Updated",
+    "email": "Faisal@example.com",
+    "role": "admin"
+    }
+    ```
+- Delete a user by id.
 - **DELETE** `/users/:id` - Delete a user by id.
+  - request parameters
+    - id: user id
+
 
 ### Ticket Endpoints
+- Create a new ticket.
+   - **POST** `/tickets` - Create a new ticket.
+   - request body:
+   ```
+   {
+    "title": "Ticket 1",
+    "description": "Ticket 1 description",
+    "status": "open",
+    "assignedTo": "60f0b0b0e3b3a1b0b4f1b0b4"
+    }
+    ```
+  
+- Get all tickets.
 - **GET** `/tickets` - Get all tickets.
-- **GET** `/tickets/:id` - Get a ticket by id.
-- **POST** `/tickets` - Create a new ticket.
+  - response body:
+  ```
+  [
+    {
+        "_id": "60f0b0b0e3b3a1b0b4f1b0b4",
+        "title": "Ticket 1",
+        "description": "Ticket 1 description",
+        "status": "open",
+        "assignedTo": "60f0b0b0e3b3a1b0b4f1b0b4"
+    },
+  ]
+  ```
+  
+- Get a ticket by id.
+    - **GET** `/tickets/:id` - Get a ticket by id.
+    - request parameters
+      - id: ticket id
+
+
+- Update a ticket by id.
 - **PUT** `/tickets/:id` - Update a ticket by id.
+  - request parameters
+    - id: ticket id
+    - request body:
+   ```
+   {
+    "title": "Ticket 1 Updated",
+    "description": "Ticket 1 description",
+    "status": "open",
+    "assignedTo": "60f0b0b0e3b3a1b0b4f1b0b4"
+    }
+    ```
+
+- Delete a ticket by id.
 - **DELETE** `/tickets/:id` - Delete a ticket by id.
+  - request parameters
+    - id: ticket id
+    
+
 
 ## Getting Started
 To get a local copy up and running follow these simple steps.
