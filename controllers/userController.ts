@@ -1,22 +1,25 @@
 import { Request, Response } from "express";
 import User from "../models/userModel";
-import { checkUserExists } from "../middleware/errorMiddleware";
+import {
+  checkUserExistsByEmail,
+  checkFields,
+  checkUserById,
+} from "../middleware/errorMiddleware";
 
 // Create a new user
 async function createUser(req: Request, res: Response) {
   try {
-    const { name, email, role } = req.body;
-    if (!name || !email || !role) {
-      return res.status(400).json({
-        errorCode: "MISSING_FIELDS",
-        msg: "Missing required fields: name, email, role",
-      });
-    }
-    await checkUserExists(req, res, email);
+    const userFields = {
+      name: req.body.name,
+      email: req.body.email,
+      role: req.body.role,
+    };
+    await checkFields(req, res, userFields);
+    await checkUserExistsByEmail(req, res, userFields.email);
     const newUser = new User({
-      name,
-      email: email.toLowerCase(),
-      role,
+      name: userFields.name,
+      email: userFields.email.toLowerCase(),
+      role: userFields.role,
     });
     const user = await newUser.save();
     return res.status(201).json(user);
@@ -29,6 +32,9 @@ async function createUser(req: Request, res: Response) {
 async function getUsers(req: Request, res: Response) {
   try {
     const users = await User.find();
+    if (users.length === 0) {
+      return res.status(200).json({ msg: "No users exist. Please create one" });
+    }
     return res.status(200).json(users);
   } catch (err: any) {
     return res.status(500).json({ msg: err.message });
@@ -39,13 +45,14 @@ async function getUsers(req: Request, res: Response) {
 async function getUserById(req: Request, res: Response) {
   try {
     const user = await User.findById(req.params.id);
-    if (!user) {
-      return res
-        .status(404)
-        .json({ errorCode: "USER_NOT_FOUND", msg: "User not found" });
-    }
     return res.status(200).json(user);
   } catch (err: any) {
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({
+        errorCode: "USER_NOT_FOUND",
+        msg: "User not found. Please enter valid ID",
+      });
+    }
     return res.status(500).json({ msg: err.message });
   }
 }
@@ -53,28 +60,26 @@ async function getUserById(req: Request, res: Response) {
 //update user
 async function updateUser(req: Request, res: Response) {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res
-        .status(404)
-        .json({ errorCode: "USER_NOT_FOUND", msg: "User not found" });
-    }
+    const user: any = await User.findById(req.params.id);
     const { name, email, role } = req.body;
-    await checkUserExists(req, res, email);
-    if (name && email && role) {
-      user.name = name;
-      user.email = email.toLowerCase();
-      user.role = role;
-    } else {
-      return res.status(400).json({
-        errorCode: "MISSING_FIELDS",
-        msg: "Missing required fields: name, email, role",
-      });
+    // await checkUserExistsByEmail(req, res, email);
+    await checkFields(req, res, { name, email, role }); //input validation
+    for (const key in req.body) {
+      //update user after validate fields
+      user[key] = req.body[key];
     }
     const updatedUser = await user.save();
 
-    return res.status(200).json(updatedUser);
+    return res
+      .status(200)
+      .json({ msg: "User updated successfully", updatedUser });
   } catch (err: any) {
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({
+        errorCode: "USER_NOT_FOUND",
+        msg: "User not found. Please enter valid ID",
+      });
+    }
     return res.status(500).json({ msg: err.message });
   }
 }
@@ -82,15 +87,16 @@ async function updateUser(req: Request, res: Response) {
 //delete user by id
 async function deleteUser(req: Request, res: Response) {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res
-        .status(404)
-        .json({ errorCode: "USER_NOT_FOUND", msg: "User not found" });
-    }
+    const user: any | null = await User.findById(req.params.id);
     await user.deleteOne();
-    return res.status(200).json({ msg: "User deleted" });
+    return res.status(200).json({ msg: "User deleted successfully" });
   } catch (err: any) {
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({
+        errorCode: "USER_NOT_FOUND",
+        msg: "User not found. Please enter valid ID",
+      });
+    }
     return res.status(500).json({ msg: err.message });
   }
 }
