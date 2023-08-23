@@ -22,7 +22,7 @@ async function createUser(req: Request, res: Response) {
       role: userFields.role,
     });
     const user = await newUser.save();
-    return res.status(201).json(user);
+    return res.status(201).json({ msg: "User created successfully", user });
   } catch (err: any) {
     return res.status(500).json({ msg: err.message });
   }
