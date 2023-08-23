@@ -33,7 +33,6 @@ The database schema is as follows:
   - status (open, in progress, closed)
   - assignedTo
 
-<img src="">
 
 ## API Endpoints
 
@@ -155,7 +154,7 @@ npm install
 3. Create a .env file and add the following:
 ```
 PORT=3000
-MONGO_URI=YOUR_MONGO_URI
+MONGO_URL=YOUR_MONGO_URL
 ```
 
 4. Run the server:
